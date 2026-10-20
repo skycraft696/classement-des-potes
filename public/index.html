@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Classement des Potes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF3DC;--sf:#fff;--tx:#2A1650;--mu:#7a6a99;--ac:#E8267D;--ac2:#FFD23F;--bd:#e6d9bd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1033;--sf:#2A1A4D;--tx:#F6F1FF;--mu:#a998cc;--ac:#FF4F9A;--ac2:#FFE45C;--bd:#43307a}}
+:root[data-theme="dark"]{--bg:#1B1033;--sf:#2A1A4D;--tx:#F6F1FF;--mu:#a998cc;--ac:#FF4F9A;--ac2:#FFE45C;--bd:#43307a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:500;font-size:17px;line-height:1.4;min-height:100vh}
+main{max-width:520px;margin:0 auto;padding:20px 18px 48px}
+h1{font-weight:800;font-size:2.4rem;line-height:1;margin:12px 0 8px;letter-spacing:-.02em}
+h2{font-weight:800;font-size:1.5rem;line-height:1.15;margin:0 0 12px}
+p{margin:0 0 14px}.mu{color:var(--mu)}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{display:block;width:100%;padding:15px;border:0;border-radius:14px;background:var(--ac);color:#fff;font-weight:800;font-size:1.05rem;margin-top:14px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.alt{background:transparent;color:var(--tx);border:2px solid var(--bd)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--ac2);outline-offset:2px}
+input,textarea{font:inherit;color:var(--tx);background:var(--sf);border:2px solid var(--bd);border-radius:12px;padding:11px 13px;width:100%}
+textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:8px;margin-bottom:8px}
+.x{border:0;background:var(--sf);border-radius:12px;padding:0 14px;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{padding:8px 14px;border-radius:99px;background:var(--sf);border:2px solid var(--bd);font-weight:800}
+.q{background:var(--ac2);color:#2A1650;border-radius:18px;padding:18px;font-weight:800;font-size:1.3rem;line-height:1.2;margin:10px 0 16px}
+ol.rk{list-style:none;padding:0;margin:0}
+ol.rk li{display:flex;align-items:center;gap:12px;background:var(--sf);border-radius:12px;padding:10px 14px;margin-bottom:6px;font-weight:800}
+ol.rk b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff}
+.opt{display:block;width:100%;text-align:left;background:var(--sf);border:2px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:8px;font-weight:700}
+.opt.good{border-color:#22b07d;background:#22b07d22}.opt.bad{border-color:var(--ac)}
+.sc{display:flex;justify-content:space-between;padding:10px 4px;border-bottom:1px solid var(--bd);font-weight:800}
+.big{font-size:3rem;text-align:center;margin:10px 0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const Q = [
+"Qui est le plus susceptible de finir millionnaire ?",
+"Qui est le plus susceptible de finir en prison ?",
+"Qui est le plus susceptible de se faire tromper par sa meuf ?",
+"Qui est le plus susceptible de tromper sa meuf ?",
+"Qui est le plus susceptible de pleurer devant un dessin animé ?",
+"Qui est le plus susceptible de finir à la rue ?",
+"Qui est le plus susceptible de se marier trois fois ?",
+"Qui est le plus susceptible de faire un enfant par accident ?",
+"Qui est le plus susceptible de finir avec une femme de 20 ans de plus ?",
+"Qui est le plus susceptible de lancer un OnlyFans ?",
+"Qui est le plus susceptible de mourir ridiculement ?",
+"Qui est le plus susceptible de se faire virer le premier jour de son nouveau boulot ?",
+"Qui est le plus susceptible de devenir une star de télé-réalité ?",
+"Qui est le plus susceptible d’être encore puceau à 30 ans ?",
+"Qui est le plus susceptible de rouler sans permis ?",
+"Qui est le plus susceptible de finir dans une secte ?",
+"Qui est le plus susceptible de se faire cancel sur Twitter ?",
+"Qui est le plus susceptible de vomir en soirée ce week-end ?",
+"Qui est le plus susceptible de parler à son ex à 3h du matin ?",
+"Qui est le plus susceptible de finir président ?",
+"Qui est le plus susceptible de devenir le pire beauf du groupe à 40 ans ?",
+"Qui est le plus susceptible de se faire arnaquer par un faux prince nigérian ?",
+"Qui est le plus susceptible de s’endormir en pleine soirée ?",
+"Qui est le plus susceptible de dépenser tout son salaire en une semaine ?",
+"Qui est le plus susceptible de finir à vivre chez ses parents jusqu’à 40 ans ?",
+"Qui est le plus susceptible de se faire griller en train de mentir ?",
+"Qui est le plus susceptible de coucher avec la copine d’un pote ?",
+"Qui est le plus susceptible d’avoir déjà regardé un truc bizarre sur Internet ?",
+"Qui est le plus susceptible de se perdre dans sa propre ville ?",
+"Qui est le plus susceptible de partir vivre à l’étranger sur un coup de tête ?",
+"Qui est le plus susceptible de se battre avec un videur ?",
+"Qui est le plus susceptible de finir en burn-out à 25 ans ?",
+"Qui est le plus susceptible d’oublier l’anniversaire de sa meuf ?",
+"Qui est le plus susceptible de faire un discours gênant à un mariage ?",
+"Qui est le plus susceptible d’être le premier à avoir des enfants ?",
+"Qui est le plus susceptible de devenir chauve le premier ?",
+"Qui est le plus susceptible d’investir dans une cryptomonnaie douteuse ?",
+"Qui est le plus susceptible de sortir avec quelqu’un de son boulot ?",
+"Qui est le plus susceptible d’avoir un casier judiciaire à 30 ans ?",
+"Qui est le plus susceptible de devenir influenceur ?",
+"Qui est le plus susceptible de se faire kidnapper et de s’en foutre ?"
+];
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+let G = { players: ["", "", ""], custom: "", scores: {}, used: [], turn: 0, pool: [] };
+
+function setup() {
+  app.innerHTML = `<h1>Le Classement des Potes</h1>
+  <p class="mu">Un joueur classe tout le monde sur une question. Les autres doivent retrouver la question parmi 5. Un seul téléphone, on se le passe.</p>
+  <h2>Qui joue ?</h2><div id="pl"></div>
+  <button class="btn alt" id="add">Ajouter un joueur</button>
+  <h2 style="margin-top:22px">Tes propres questions (facultatif)</h2>
+  <textarea id="cu" placeholder="Une question par ligne, ex : Qui est le plus susceptible de…">${esc(G.custom)}</textarea>
+  <button class="btn" id="go">Lancer la partie</button>`;
+  const draw = () => {
+    document.getElementById("pl").innerHTML = G.players.map((p, i) => `<div class="row"><input data-i="${i}" value="${esc(p)}" placeholder="Prénom du joueur ${i + 1}" maxlength="16" aria-label="Joueur ${i + 1}">${G.players.length > 3 ? `<button class="x" data-r="${i}" aria-label="Retirer">✕</button>` : ""}</div>`).join("");
+    document.querySelectorAll("#pl input").forEach(el => el.oninput = e => { G.players[+e.target.dataset.i] = e.target.value; });
+    document.querySelectorAll("#pl .x").forEach(el => el.onclick = () => { G.players.splice(+el.dataset.r, 1); draw(); });
+  };
+  draw();
+  document.getElementById("add").onclick = () => { G.players.push(""); draw(); };
+  document.getElementById("go").onclick = () => {
+    const names = G.players.map(p => p.trim()).filter(Boolean);
+    if (new Set(names.map(n => n.toLowerCase())).size !== names.length || names.length < 3) { alert("Il faut au moins 3 joueurs, avec des prénoms différents."); return; }
+    G.custom = document.getElementById("cu").value;
+    G.players = names; G.scores = {}; names.forEach(n => G.scores[n] = 0);
+    G.pool = Q.concat(G.custom.split("\n").map(s => s.trim()).filter(s => s.length > 5));
+    G.used = []; G.turn = 0; startRound();
+  };
+}
+
+function startRound() {
+  const avail = G.pool.filter(q => !G.used.includes(q));
+  const pick = avail.length ? avail : G.pool;
+  G.q = pick[Math.floor(Math.random() * pick.length)];
+  G.used.push(G.q);
+  G.ranker = G.players[G.turn % G.players.length];
+  G.options = shuffle([G.q].concat(shuffle(G.pool.filter(q => q !== G.q)).slice(0, 4)));
+  G.rank = [];
+  rankScreen();
+}
+
+function rankScreen() {
+  const left = G.players.filter(p => !G.rank.includes(p));
+  app.innerHTML = `<p class="mu">Au tour de</p><h2>${esc(G.ranker)}</h2>
+  <p>Les autres, ne regardez pas l’écran !</p>
+  <div class="q">${esc(G.q)}</div>
+  <p class="mu">Touche les prénoms du 1er au dernier, toi compris.</p>
+  <ol class="rk">${G.rank.map((p, i) => `<li><b>${i + 1}</b>${esc(p)}</li>`).join("")}</ol>
+  <div class="chips">${left.map(p => `<button class="chip" data-p="${esc(p)}">${esc(p)}</button>`).join("")}</div>
+  <button class="btn alt" id="undo" ${G.rank.length ? "" : "disabled"}>Annuler le dernier</button>
+  <button class="btn" id="ok" ${left.length ? "disabled" : ""}>Valider le classement</button>`;
+  app.querySelectorAll(".chip").forEach(b => b.onclick = () => { G.rank.push(b.dataset.p); rankScreen(); });
+  document.getElementById("undo").onclick = () => { G.rank.pop(); rankScreen(); };
+  document.getElementById("ok").onclick = () => { G.guessers = G.players.filter(p => p !== G.ranker); G.gi = 0; G.hits = []; passScreen(); };
+}
+
+function passScreen() {
+  const g = G.guessers[G.gi];
+  app.innerHTML = `<div class="big">📱</div><h2 style="text-align:center">Passe le téléphone à ${esc(g)}</h2>
+  <p class="mu" style="text-align:center">Les autres, ne regardez pas.</p>
+  <button class="btn" id="go">Je suis ${esc(g)}</button>`;
+  document.getElementById("go").onclick = guessScreen;
+}
+
+function guessScreen() {
+  const g = G.guessers[G.gi];
+  app.innerHTML = `<p class="mu">${esc(g)}, voici le classement de ${esc(G.ranker)}</p>
+  <ol class="rk">${G.rank.map((p, i) => `<li><b>${i + 1}</b>${esc(p)}</li>`).join("")}</ol>
+  <h2 style="margin-top:20px">Quelle était la question ?</h2>
+  ${G.options.map((o, i) => `<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}`;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    if (G.options[+b.dataset.i] === G.q) { G.hits.push(g); G.scores[g]++; G.scores[G.ranker]++; }
+    G.gi++;
+    G.gi < G.guessers.length ? passScreen() : revealScreen();
+  });
+}
+
+function revealScreen() {
+  const miss = G.guessers.filter(g => !G.hits.includes(g));
+  app.innerHTML = `<h2>La vraie question</h2><div class="q">${esc(G.q)}</div>
+  <p>${G.hits.length ? "✅ Trouvé par " + G.hits.map(esc).join(", ") : "Personne n’a trouvé 😬"}</p>
+  ${miss.length ? `<p>❌ Raté par ${miss.map(esc).join(", ")}</p>` : ""}
+  <p class="mu">${esc(G.ranker)} marque 1 point par joueur qui a trouvé. Les gagnants marquent 1 point chacun. Le moment idéal pour se justifier.</p>
+  <button class="btn" id="sc">Voir le score</button>`;
+  document.getElementById("sc").onclick = scoreScreen;
+}
+
+function scoreScreen() {
+  const sorted = G.players.slice().sort((a, b) => G.scores[b] - G.scores[a]);
+  app.innerHTML = `<h2>Score</h2>${sorted.map((p, i) => `<div class="sc"><span>${i === 0 ? "👑 " : ""}${esc(p)}</span><span>${G.scores[p]} pt${G.scores[p] > 1 ? "s" : ""}</span></div>`).join("")}
+  <button class="btn" id="nx">Manche suivante : ${esc(G.players[(G.turn + 1) % G.players.length])} classe</button>
+  <button class="btn alt" id="end">Nouvelle partie</button>`;
+  document.getElementById("nx").onclick = () => { G.turn++; startRound(); };
+  document.getElementById("end").onclick = () => { G.players = G.players.slice(); setup(); };
+}
+const $ = id => document.getElementById(id);
+let R = null, O = {};
+const peers = () => R.peers().filter(p => p.presence.code === O.code);
+const hp = () => peers().find(p => p.presence.host)?.presence;
+const pr = id => R.peers().find(p => p.peer === id);
+
+function home() {
+  app.innerHTML = `<h1>Le Classement des Potes</h1>
+  <p class="mu">Qui finira le plus riche ? Le plus en prison ? Classe tes potes et laisse-les deviner la question.</p>
+  <button class="btn" id="on">Jouer en ligne avec mes potes</button>
+  <button class="btn alt" id="lo">Jouer sur un seul téléphone</button>`;
+  $("on").onclick = onlineHome; $("lo").onclick = setup;
+}
+
+async function onlineHome() {
+  if (!R) R = makeRoom();
+  if (!R) {
+    app.innerHTML = `<h2>Jeu en ligne indisponible</h2><p>Pour jouer en ligne, ouvre ce lien depuis un compte claude.ai connecté (gratuit). Sinon, joue sur un seul téléphone.</p><button class="btn alt" id="b">Retour</button>`;
+    $("b").onclick = home; return;
+  }
+  app.innerHTML = `<h2>Jouer en ligne</h2><input id="nm" placeholder="Ton prénom" maxlength="16" value="${esc(O.name || "")}">
+  <button class="btn" id="cr">Créer une partie</button>
+  <p class="mu" style="margin-top:22px">Ou rejoins la partie d’un pote :</p>
+  <input id="cd" placeholder="Code à 4 lettres" maxlength="4" style="text-transform:uppercase">
+  <button class="btn alt" id="jn">Rejoindre</button><button class="btn alt" id="b">Retour</button>`;
+  const go = host => {
+    const n = $("nm").value.trim();
+    const c = host ? Array.from({ length: 4 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(Math.random() * 24)]).join("") : $("cd").value.trim().toUpperCase();
+    if (!n || c.length !== 4) { alert("Entre ton prénom" + (host ? "" : " et le code à 4 lettres") + "."); return; }
+    O = { code: c, name: n, host, cur: null, cq: "" }; enter();
+  };
+  $("cr").onclick = () => go(true); $("jn").onclick = () => go(false); $("b").onclick = home;
+}
+
+function enter() {
+  const p = { code: O.code, name: O.name, host: O.host, t: Date.now() };
+  if (O.host) Object.assign(p, { ph: "lobby", rd: 0, ro: [], sc: [], us: [], cq: "" });
+  R.presence(p);
+  R.onPeers(() => { drive(); draw(); }, () => { app.innerHTML = `<h2>Connexion perdue</h2><p>Recharge la page pour revenir dans la partie.</p>`; });
+  draw();
+}
+
+function drive() {
+  if (!O.host) return;
+  const H = hp(); if (!H || H.ph === "lobby" || H.ph === "reveal") return;
+  const ro = H.ro, ri = H.rd % ro.length, rp = pr(ro[ri][0]);
+  if (H.ph === "rank") {
+    if (!rp) return R.presence({ rd: H.rd + 1 });
+    if (rp.presence.rk && rp.presence.rk.rd === H.rd) R.presence({ ph: "guess" });
+  } else if (H.ph === "guess" && allAnswered(H)) reveal();
+}
+function answered(H) {
+  const ro = H.ro, ri = H.rd % ro.length;
+  const gs = ro.map((x, i) => i).filter(i => i !== ri && pr(ro[i][0]));
+  return [gs.filter(i => { const g = pr(ro[i][0]).presence.gu; return g && g.rd === H.rd; }).length, gs.length];
+}
+const allAnswered = H => { const [a, n] = answered(H); return a === n; };
+function reveal() {
+  const H = hp(), ro = H.ro, ri = H.rd % ro.length, rk = pr(ro[ri][0])?.presence.rk;
+  if (!rk || H.ph !== "guess") return;
+  const sc = H.sc.slice(), hits = [];
+  ro.forEach((x, i) => { const g = i !== ri && pr(x[0])?.presence.gu; if (g && g.rd === H.rd && g.pick === rk.qi) { hits.push(x[1]); sc[i]++; sc[ri]++; } });
+  R.presence({ ph: "reveal", sc, res: hits, us: H.us.concat(rk.qid) });
+}
+
+function board(H) {
+  return H.ro.map((x, i) => i).sort((a, b) => H.sc[b] - H.sc[a]).map((i, k) => `<div class="sc"><span>${k === 0 && H.sc[i] ? "👑 " : ""}${esc(H.ro[i][1])}</span><span>${H.sc[i]} pt${H.sc[i] > 1 ? "s" : ""}</span></div>`).join("");
+}
+
+function draw() {
+  const H = hp();
+  if (!H) { app.innerHTML = `<h2>Partie ${esc(O.code)}</h2><p class="mu">${O.host ? "Création…" : "Recherche de la partie… Vérifie le code, ou attends que l’hôte soit connecté."}</p>`; return; }
+  if (H.ph === "lobby") return lobby(H);
+  const me = R.peers().find(p => p.isMe && p.sameTab);
+  const ro = H.ro, mi = ro.findIndex(x => me && x[0] === me.peer), ri = H.rd % ro.length;
+  const rp = pr(ro[ri][0]), rk = rp && rp.presence.rk && rp.presence.rk.rd === H.rd ? rp.presence.rk : null;
+  let h = `<p class="mu">Manche ${H.rd + 1}, ${esc(ro[ri][1])} classe</p>`;
+  if (H.ph === "rank") {
+    if (mi === ri) return rankUI(H, h);
+    h += `<h2>${esc(ro[ri][1])} est en train de classer tout le monde</h2><p class="mu">Ça arrive, patiente…</p>`;
+  } else if (H.ph === "guess" && rk) {
+    const [a, n] = answered(H), my = pr(me?.peer)?.presence.gu;
+    h += `<ol class="rk">${rk.order.map((p, i) => `<li><b>${i + 1}</b>${esc(p)}</li>`).join("")}</ol>`;
+    if (mi === ri) h += `<p style="margin-top:16px">Les autres cherchent ta question. ${a}/${n} ont répondu.</p>`;
+    else if (mi < 0) h += `<p class="mu">Tu regardes la partie.</p>`;
+    else if (my && my.rd === H.rd) h += `<p style="margin-top:16px">Réponse envoyée ✅ ${a}/${n} ont répondu.</p>`;
+    else h += `<h2 style="margin-top:20px">Quelle était la question ?</h2>${rk.opts.map((o, i) => `<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}`;
+    if (O.host) h += `<button class="btn alt" id="rv">Révéler maintenant</button>`;
+  } else if (H.ph === "reveal" && rk) {
+    h += `<h2>La vraie question</h2><div class="q">${esc(rk.opts[rk.qi])}</div>
+    <p>${H.res.length ? "✅ Trouvé par " + H.res.map(esc).join(", ") : "Personne n’a trouvé 😬"}</p><h2 style="margin-top:20px">Score</h2>${board(H)}`;
+    h += O.host ? `<button class="btn" id="nx">Manche suivante</button>` : `<p class="mu" style="margin-top:14px">L’hôte lance la suite.</p>`;
+  }
+  app.innerHTML = h;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => R.presence({ gu: { rd: H.rd, pick: +b.dataset.i } }));
+  if ($("rv")) $("rv").onclick = reveal;
+  if ($("nx")) $("nx").onclick = () => R.presence({ ph: "rank", rd: H.rd + 1, res: null });
+}
+
+function lobby(H) {
+  const ps = peers().sort((a, b) => a.presence.t - b.presence.t);
+  app.innerHTML = `<p class="mu">Code de la partie</p><div class="big" style="letter-spacing:.2em;font-weight:800">${esc(O.code)}</div>
+  <p class="mu" style="text-align:center">Envoie le lien du site et ce code à tes potes.</p>
+  <h2>${ps.length} joueur${ps.length > 1 ? "s" : ""}</h2>
+  <div class="chips">${ps.map(p => `<span class="chip">${esc(String(p.presence.name).slice(0, 16))}${p.isMe ? " (toi)" : ""}</span>`).join("")}</div>
+  ${O.host ? `<h2 style="margin-top:20px">Tes propres questions (facultatif)</h2><textarea id="cu" placeholder="Une question par ligne">${esc(O.cq)}</textarea>
+  <button class="btn" id="st" ${ps.length < 3 ? "disabled" : ""}>${ps.length < 3 ? "Il faut 3 joueurs minimum" : "Lancer la partie"}</button>` : `<p class="mu">L’hôte va lancer la partie…</p>`}`;
+  if (!O.host) return;
+  $("cu").oninput = e => { O.cq = e.target.value; };
+  $("st").onclick = () => R.presence({ ph: "rank", rd: 0, ro: ps.map(p => [p.peer, String(p.presence.name).slice(0, 16)]), sc: ps.map(() => 0), us: [], cq: (O.cq || "").slice(0, 1200), res: null });
+}
+
+function rankUI(H, h) {
+  const ro = H.ro, all = pool => pool.map((q, i) => i);
+  const pool = Q.concat((H.cq || "").split("\n").map(s => s.trim()).filter(s => s.length > 5));
+  if (!O.cur || O.cur.rd !== H.rd) {
+    const av = all(pool).filter(i => !H.us.includes(i)), src = av.length ? av : all(pool);
+    const qid = src[Math.floor(Math.random() * src.length)];
+    const ids = shuffle([qid].concat(shuffle(all(pool).filter(i => i !== qid)).slice(0, 4)));
+    O.cur = { rd: H.rd, qid, opts: ids.map(i => pool[i]), qi: ids.indexOf(qid), order: [] };
+  }
+  const c = O.cur, left = all(ro).filter(i => !c.order.includes(i));
+  app.innerHTML = `${h}<p>Les autres, ne regardez pas l’écran de ${esc(O.name)} !</p><div class="q">${esc(c.opts[c.qi])}</div>
+  <p class="mu">Touche les prénoms du 1er au dernier, toi compris.</p>
+  <ol class="rk">${c.order.map((i, k) => `<li><b>${k + 1}</b>${esc(ro[i][1])}</li>`).join("")}</ol>
+  <div class="chips">${left.map(i => `<button class="chip" data-i="${i}">${esc(ro[i][1])}</button>`).join("")}</div>
+  <button class="btn alt" id="undo" ${c.order.length ? "" : "disabled"}>Annuler le dernier</button>
+  <button class="btn" id="ok" ${left.length ? "disabled" : ""}>Valider le classement</button>`;
+  app.querySelectorAll(".chip").forEach(b => b.onclick = () => { c.order.push(+b.dataset.i); rankUI(H, h); });
+  $("undo").onclick = () => { c.order.pop(); rankUI(H, h); };
+  $("ok").onclick = () => R.presence({ rk: { rd: H.rd, order: c.order.map(i => ro[i][1]), opts: c.opts, qi: c.qi, qid: c.qid } });
+}
+// Connexion temps réel via WebSocket (serveur Node fourni), même interface que la salle claude.ai
+function makeRoom() {
+  let id = sessionStorage.getItem("pid");
+  if (!id) { id = Math.random().toString(36).slice(2, 12); sessionStorage.setItem("pid", id); }
+  let ws, list = [], mine = {}; const cbs = [];
+  const fire = () => cbs.forEach(f => f());
+  const send = () => { if (ws && ws.readyState === 1) ws.send(JSON.stringify({ p: mine })); };
+  function connect() {
+    ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/?id=" + id);
+    ws.onopen = send;
+    ws.onmessage = e => {
+      const m = JSON.parse(e.data);
+      list = m.peers.map(p => ({ peer: p.peer, presence: p.presence, isMe: p.peer === id, sameTab: p.peer === id }));
+      fire();
+    };
+    ws.onclose = () => setTimeout(connect, 1500);
+  }
+  connect();
+  return {
+    presence(patch) {
+      for (const k in patch) { if (patch[k] === null) delete mine[k]; else mine[k] = patch[k]; }
+      list = list.filter(p => p.peer !== id).concat([{ peer: id, presence: Object.assign({}, mine), isMe: true, sameTab: true }]);
+      send(); setTimeout(fire, 0);
+      return Promise.resolve();
+    },
+    peers: () => list,
+    onPeers(f) { cbs.push(f); }
+  };
+}
+home();
+</script>
+</body>
+</html>
